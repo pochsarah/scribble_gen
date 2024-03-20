@@ -12,7 +12,7 @@ There is also an iterable datalodar whhich idea is to create several samples fro
 
 #TODO: 
   - use the scribble gnerator and create a dataset based on some segmentation datasets (COCO, Cityscapes, anyone)
-  - train a DeepLab model in which the scribbles are just other channel
+  - train a DeepLab model in which the scribbles are just other channel https://github.com/hkchengrex/Scribble-to-Mask
   - experiment with more architectures
   - fine tune in specific datasetwith few samples (clouds)
   - train just with small dataset (clouds) 
