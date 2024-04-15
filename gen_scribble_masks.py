@@ -1,23 +1,17 @@
-# External library imports for image processing and manipulation
-from argparse import ArgumentParser
-from glob import glob
-from pathlib import Path
-import time
-
-from tqdm import tqdm
-import yaml
 import cv2
+import yaml
+import time
 import numpy as np
-# PyTorch related imports
-import torch
+from glob import glob
+from tqdm import tqdm
+from pathlib import Path
+from argparse import ArgumentParser
 
-from utils.dataloaders import CustomScribbleDataset
-from torch.utils.data import DataLoader
 import visualize
 import scribbles
 
 
-def generate_scribble_mask(params, mask):
+def generate_scribble_mask(params: dict, mask: np.array):
         # Generate scribbles inside contours
         internal_scribbles = scribbles.generate_scribbles_inside_contours(mask, **params["intern"])
 
@@ -25,9 +19,7 @@ def generate_scribble_mask(params, mask):
         border_scribbles = scribbles.generate_border_multiclass_scribbles(mask, **params["border"])
 
         # Combine scribbles
-        combined_scribbles = np.maximum(internal_scribbles, border_scribbles)
-
-        return combined_scribbles
+        return np.maximum(internal_scribbles, border_scribbles)
 
 if __name__=="__main__":
 
@@ -36,14 +28,14 @@ if __name__=="__main__":
     parser.add_argument('--project', default='./results/')
     ARGS = parser.parse_args()
 
-    mask_paths = glob("/home/spoch/Documents/private/termatics/gtFine_trainvaltest/gtFine/train/*/*_color.png", recursive=True)
-    mask_paths.sort()
-    
-    #save_dir = "/home/spoch/Documents/private/termatics/scribbles/"
     with open(ARGS.config) as f:
         scribble_params = yaml.load(f, Loader=yaml.SafeLoader) 
 
+    mask_paths = glob("/home/spoch/Documents/private/termatics/gtFine_trainvaltest/gtFine/train/*/*_color.png", recursive=True)
+    mask_paths.sort()
+    
     colors = {label: np.random.randint(0, 256, 3) for label in range(256)}
+    
     save_dir = Path(ARGS.project)
     save_dir.mkdir(parents=True, exist_ok=True)
 
