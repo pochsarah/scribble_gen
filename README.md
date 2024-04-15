@@ -16,3 +16,18 @@ There is also an iterable datalodar whhich idea is to create several samples fro
   - experiment with more architectures
   - fine tune in specific datasetwith few samples (clouds)
   - train just with small dataset (clouds) 
+
+
+# Generation of scribble masks
+
+In order to generate a mask of scribbles from an image mask, use the script `gen_scribble_masks.py`. This script will save your generated masks in the folder of your choice. 
+
+```
+python gen_scribble_masks.py --source 'path/directory/of/masks' --config 'path/to/parameters' --project 'path/to/save/repository'
+``` 
+
+### Exemple for the Cityscapes Dataset : 
+
+![Original image](images/2023-12-25_10_26.jpg)
+![Mask image](images/2023-12-25_10_26.png)
+![Generated scribbles](images/2023-12-25_10_26_scribbles.png)
