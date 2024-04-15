@@ -32,7 +32,7 @@ def plot_images_side_by_side(image1:np.ndarray, image2:np.ndarray, title1:str="O
     
     plt.show()
 
-def plot_overlay_multiclass_scribbles(base_image:np.ndarray, scribble_mask:np.ndarray,plot_size:Tuple[int, int] = (20, 20)):
+def plot_overlay_multiclass_scribbles(base_image:np.ndarray, scribble_mask:np.ndarray,plot_size:Tuple[int, int] = (20, 20)): 
     """
     Overlay a base image (grayscale or RGB) with its generated multiclass scribbles.
     The base image can be either grayscale or RGB, but the scribble mask is always grayscale.
@@ -65,3 +65,19 @@ def plot_overlay_multiclass_scribbles(base_image:np.ndarray, scribble_mask:np.nd
     plt.axis('off')  # Hide the axes
     plt.title('Multiclass Scribbles Overlay on Image')
     plt.show()
+
+
+def save_multiclass_scribbles(scribble_mask:np.ndarray,basename:str, colors): 
+    bg = np.empty((scribble_mask.shape[0], scribble_mask.shape[1], 3))
+    unique_classes = np.unique(scribble_mask)[1:]  # Exclude background (0)
+    # Generate random colors for each class
+    col = {label: colors[label] for label in unique_classes}
+    # Overlay each class's scribbles onto the base image
+    for class_label, color in col.items():
+        # Create a mask for the current class
+        class_mask = scribble_mask == class_label
+        # Overlay the color on the base image
+        bg[class_mask] = bg[class_mask] * 0.5 + color * 0.5
+
+    cv2.imwrite(basename, bg)
+
