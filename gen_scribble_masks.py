@@ -26,7 +26,7 @@ if __name__=="__main__":
 
     parser = ArgumentParser()
     parser.add_argument('--source', type=str, required=True)
-    parser.add_argument('--config', type=str, default='config/params.yaml')
+    parser.add_argument('--config', type=str, default='./config/params.yaml')
     parser.add_argument('--project', type=str, default='./results/')
     ARGS = parser.parse_args()
 
@@ -37,8 +37,7 @@ if __name__=="__main__":
          mask_paths=[ARGS.source]
     else:
         mask_paths = glob(ARGS.source, recursive=True)
-        mask_paths.sort()
-    
+        
     colors = {label: np.random.randint(0, 256, 3) for label in range(256)}
 
     save_dir = Path(ARGS.project)
@@ -46,7 +45,6 @@ if __name__=="__main__":
 
     t0= time.time()
     for i in tqdm(range(len(mask_paths))):
-
         basename = Path(mask_paths[i]).name
         gray_image = cv2.imread(mask_paths[i], cv2.IMREAD_GRAYSCALE)
 

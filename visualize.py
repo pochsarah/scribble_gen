@@ -67,7 +67,7 @@ def plot_overlay_multiclass_scribbles(base_image:np.ndarray, scribble_mask:np.nd
     plt.show()
 
 
-def save_multiclass_scribbles(scribble_mask:np.ndarray,basename:str, colors): 
+def save_multiclass_scribbles(scribble_mask:np.ndarray,basename:str, colors: dict): 
     bg = np.empty((scribble_mask.shape[0], scribble_mask.shape[1], 3))
     unique_classes = np.unique(scribble_mask)[1:]  # Exclude background (0)
     # Generate random colors for each class
@@ -80,4 +80,3 @@ def save_multiclass_scribbles(scribble_mask:np.ndarray,basename:str, colors):
         bg[class_mask] = bg[class_mask] * 0.5 + color * 0.5
 
     cv2.imwrite(basename, bg)
-
