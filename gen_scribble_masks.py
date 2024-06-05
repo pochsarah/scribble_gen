@@ -11,6 +11,10 @@ from argparse import ArgumentParser
 import visualize
 import scribbles
 
+#-------------------
+# Faire en sorte d'avoir les mêmes couleurs pour les classes entre le mask et la couche scribble
+#-------------------
+
 
 def generate_scribble_mask(params: dict, mask: np.array):
         # Generate scribbles inside contours
@@ -38,8 +42,6 @@ if __name__=="__main__":
     else:
         mask_paths = glob(ARGS.source, recursive=True)
         
-    colors = {label: np.random.randint(0, 256, 3) for label in range(256)}
-
     save_dir = Path(ARGS.project)
     save_dir.mkdir(parents=True, exist_ok=True)
 
@@ -48,8 +50,12 @@ if __name__=="__main__":
         basename = Path(mask_paths[i]).name
         gray_image = cv2.imread(mask_paths[i], cv2.IMREAD_GRAYSCALE)
 
+        label, index = np.unique(gray_image, return_index=True)
+
+        color_img = cv2.imread(mask_paths[i], cv2.IMREAD_COLOR).reshape(-1, 3)
+        lab_col = {label[i]: np.array(color_img[index[i]]) for i in range(len(label))}
+
         combined = generate_scribble_mask(scribble_params, gray_image)
-        visualize.save_multiclass_scribbles(combined, str(os.path.join(save_dir, basename)), colors)
+        visualize.save_multiclass_scribbles(combined, str(os.path.join(save_dir, basename)), lab_col)
 
     print(f'Done. ({time.time() - t0:.3f}s)')
-
