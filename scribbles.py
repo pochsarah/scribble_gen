@@ -146,21 +146,21 @@ def generate_multiclass_scribbles_(multiclass_image: np.ndarray,
     for class_label in class_labels:
         # Create a binary mask for the current class
         binary_mask = (multiclass_image == class_label).astype(np.uint8)
+        
+        # Find edges using Canny edge detection with fixed thresholds
+        edges = cv2.Canny(binary_mask, 1, 1)
+        
+        # Create a border mask by dilating the edges
+        border_mask = cv2.dilate(edges, None, iterations=1)
+        
         # Generate positive scribbles for the current class
         # The function generate_contour_chunks needs to be defined previously
         positive_scribbles = generate_contour_chunks(binary_mask, max_chunk_length, min_chunk_length, thickness, border_margin, epsilon, inclusion_probability)
+        scribbles_image[border_mask > 0] = 0
+        # Assign the original multiclass image values to the scribbles
+        scribbles_image[positive_scribbles > 0] = multiclass_image[positive_scribbles > 0]
         
-        # Merge the current class scribbles with the scribbles image
-        scribbles_image[positive_scribbles > 0] = class_label
-
-        # Find edges using Canny edge detection with fixed thresholds
-        edges = cv2.Canny(binary_mask, 1, 1)
-
-        # Create a mask where the edges are
-        edge_mask = edges.astype(bool)
-
-        # Set the pixels on the edge in the scribbles image to zero to create separation lines
-        scribbles_image[edge_mask] = 0
+        
 
     return scribbles_image
 
@@ -195,7 +195,7 @@ def generate_border_multiclass_scribbles(multiclass_image: np.ndarray,
     class_labels = np.unique(multiclass_image)
 
     # Define the structuring element for erosion
-    kernel = np.ones((3,3), np.uint8)
+    kernel = np.ones((1,1), np.uint8)
 
     # Iterate over each unique class label to generate scribbles
     for class_label in class_labels:
@@ -205,21 +205,21 @@ def generate_border_multiclass_scribbles(multiclass_image: np.ndarray,
         # Erode the binary mask to thin the lines
         eroded_mask = cv2.erode(binary_mask, kernel, iterations=border_scribble_erode_iterations)
 
+        # Find edges using Canny edge detection with fixed thresholds
+        border_mask = cv2.Canny(eroded_mask, 1, 1)
+        
+        # Create a border mask by dilating the edges
+        #border_mask = cv2.dilate(edges, None, iterations=1)
+
         # Generate positive scribbles for the current class
         # The function generate_contour_chunks needs to be defined previously
         positive_scribbles = generate_contour_chunks(eroded_mask, border_scribble_max_chunk_length, border_scribble_min_chunk_length, border_scribble_thickness, border_scribble_border_margin, border_scribble_epsilon, border_scribble_inclusion_probability)
         
-        # Merge the current class scribbles with the scribbles image
-        scribbles_image[positive_scribbles > 0] = class_label
-
-        # Find edges using Canny edge detection with fixed thresholds
-        edges = cv2.Canny(eroded_mask, 1, 1)
-
-        # Create a mask where the edges are
-        edge_mask = edges.astype(bool)
-
-        # Set the pixels on the edge in the scribbles image to zero to create separation lines
-        scribbles_image[edge_mask] = 0
+        # Assign the original multiclass image values to the scribbles
+        scribbles_image[positive_scribbles > 0] = multiclass_image[positive_scribbles > 0]
+        
+        # Set the border pixels in the scribbles image to zero
+        scribbles_image[border_mask > 0] = 0
 
     return scribbles_image
 
