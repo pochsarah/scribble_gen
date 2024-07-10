@@ -97,7 +97,9 @@ Dataset related
 """
 
 # Example usage
-data_dir = "/home/jose/segmantic/scribble/test"
+data_dir = "/home/spoch/Documents/private/scribble_gen/patched"
+
+#histoire de chemin d'image quine colle pas. il faut que les it des path soient avant le msk ou scr
 
 # Define transformations
 transform = transforms.Compose([

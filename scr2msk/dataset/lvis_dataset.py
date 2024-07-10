@@ -60,11 +60,15 @@ class InteractiveSegmentationDataset(Dataset):
             gt = torch.from_numpy(gt).unsqueeze(0)
             srb = torch.from_numpy(srb).unsqueeze(0)
         
+        cls_gt = (gt>0.5).long().squeeze(0) # WARNING obligé de mettre ca ???
+
+
         # Create data dictionary
         data = {
             'rgb': rgb,
             'gt': gt,
             'srb': srb,
+            'cls_gt': cls_gt, 
             'info': image_name
         }
         
