@@ -3,6 +3,7 @@ from torch.utils.data.dataset import Dataset
 import os
 import cv2
 import glob
+from tqdm import tqdm
 
 class InteractiveSegmentationDataset(Dataset):
     def __init__(self, data_dir, num_classes, transform=None):
@@ -11,8 +12,9 @@ class InteractiveSegmentationDataset(Dataset):
         self.transform = transform
         
         self.samples = []
-        image_names = os.listdir(os.path.join(data_dir, "rgb"))
-        for image_name in image_names:
+        self.image_names = os.listdir(os.path.join(data_dir, "rgb"))
+        
+        for i, image_name in tqdm(enumerate(self.image_names), total=len(self.image_names)):
             gt_pattern = f"{os.path.splitext(image_name)[0]}_msk*.png"
             gt_paths = glob.glob(os.path.join(data_dir, f"{num_classes}_classes", "mask", gt_pattern))
             
@@ -26,6 +28,7 @@ class InteractiveSegmentationDataset(Dataset):
         return len(self.samples)
     
     def __getitem__(self, idx):
+
         image_name, gt_path, srb_path = self.samples[idx]
         
         # Load RGB image
