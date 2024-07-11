@@ -39,8 +39,8 @@ def get_directory_basename(image_path):
 
 class CustomScribbleGenerator:
     def __init__(self, image_paths, mask_paths, output_dir, n_binary, n_subclasses, border_scribble_params, internal_scribble_params, patch_size=None, patch_images=False):
-        self.image_paths = image_paths.sort()
-        self.mask_paths = mask_paths.sort()
+        self.image_paths = image_paths
+        self.mask_paths = mask_paths
         self.output_dir = output_dir
         self.n_binary = n_binary
         self.n_subclasses = n_subclasses
@@ -191,7 +191,9 @@ if __name__=='__main__':
     # '/home/spoch/Documents/private/termatics/leftImg8bit_trainvaltest/leftImg8bit/train/*/*'
     # '/home/spoch/Documents/private/termatics/gtFine_trainvaltest/gtFine/train/*/*'
     image_paths = glob.glob(PARAMS.imgs)
+    image_paths.sort()
     mask_paths = glob.glob(PARAMS.masks)
+    mask_paths.sort()   
 
     generator = CustomScribbleGenerator(image_paths, mask_paths, PARAMS.save, n_binary, n_subclasses,
                                         border_scribble_params, internal_scribble_params)
