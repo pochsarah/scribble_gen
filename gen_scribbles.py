@@ -9,33 +9,16 @@ from torchvision import transforms
 import scribbles
 from empatches import EMPatches
 import argparse
+import yaml 
 
-# WHICH VALUES SHOULD BE RANDOMIZED ?
-border_scribble_params = {
-    'border_scribble_max_chunk_length': 200,
-    'border_scribble_min_chunk_length': 10,
-    'border_scribble_border_margin': 5,
-    'border_scribble_epsilon': 2,
-    'border_scribble_thickness': 3,
-    'border_scribble_inclusion_probability': 1,
-    'border_scribble_erode_iterations': 0,
-}
 
-internal_scribble_params = {
-    'intern_scribble_num_scribbles_per_contour': 1,
-    'intern_scribble_max_scribble_length': 30,
-    'intern_scribble_thickness_range': (2, 5),
-    #'intern_scribble_scribble_density': 0.01,
-    'intern_scribble_edge_thickness': 10
-}
-
-n_subclasses = 2  # Number of random subclasses to select
-n_binary = 2
-
-def get_directory_basename(image_path):
-    directory = os.path.dirname(image_path)
-    base_filename = os.path.splitext(os.path.basename(image_path))[0]
-    return directory, base_filename
+"""
+TODO : 
+    - add the patching in the CustomScribbleGenerator for more efficiency
+    x put all the scribbles params in a config file for more easy management
+        - randomyze some of the values ? 
+    
+"""
 
 class CustomScribbleGenerator:
     def __init__(self, image_paths, mask_paths, output_dir, n_binary, n_subclasses, border_scribble_params, internal_scribble_params, patch_size=None, patch_images=False):
@@ -47,8 +30,8 @@ class CustomScribbleGenerator:
         self.border_scribble_params = border_scribble_params
         self.internal_scribble_params = internal_scribble_params
         self.normalize = transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
-        self.patch_size = patch_size
-        self.patch_images = patch_images
+        # self.patch_size = patch_size
+        # self.patch_images = patch_images
 
     def generate_and_save(self):
         rgb_dir = os.path.join(self.output_dir, "rgb")
@@ -97,9 +80,9 @@ class CustomScribbleGenerator:
                     scribble_mask_tensor = self._generate_scribble_mask(sub_mask_tensor)
                     self._save_files(rgb_name, scribble_mask_tensor, sub_mask_tensor, num_classes, idx, i)
 
-            # Patch and save images if chosen
-            if self.patch_images and self.patch_size is not None:
-                self._patch_and_save_images(image, mask, rgb_name, idx)
+            # # Patch and save images if chosen
+            # if self.patch_images and self.patch_size is not None:
+            #     self._patch_and_save_images(image, mask, rgb_name, idx)
 
     def _generate_scribble_mask(self, mask_tensor):
         # Convert tensor to numpy array and remove channel dimension
@@ -142,37 +125,37 @@ class CustomScribbleGenerator:
         msk_image = transforms.ToPILImage()(mask_tensor.to(torch.uint8))
         msk_image.save(msk_path)
 
-    def _patch_and_save_images(self, image, mask, rgb_name, idx):
-        # Create directory for patched images and masks
-        patched_dir = os.path.join(self.output_dir, "patched")
-        patched_rgb_dir = os.path.join(patched_dir, "rgb")
-        patched_mask_dir = os.path.join(patched_dir, "mask")
-        os.makedirs(patched_rgb_dir, exist_ok=True)
-        os.makedirs(patched_mask_dir, exist_ok=True)
+    # def _patch_and_save_images(self, image, mask, rgb_name, idx):
+    #     # Create directory for patched images and masks
+    #     patched_dir = os.path.join(self.output_dir, "patched")
+    #     patched_rgb_dir = os.path.join(patched_dir, "rgb")
+    #     patched_mask_dir = os.path.join(patched_dir, "mask")
+    #     os.makedirs(patched_rgb_dir, exist_ok=True)
+    #     os.makedirs(patched_mask_dir, exist_ok=True)
 
-        # Calculate the number of patches in each dimension
-        num_patches_x = image.shape[1] // self.patch_size
-        num_patches_y = image.shape[0] // self.patch_size
+    #     # Calculate the number of patches in each dimension
+    #     num_patches_x = image.shape[1] // self.patch_size
+    #     num_patches_y = image.shape[0] // self.patch_size
 
-        # Iterate over each patch
-        for i in range(num_patches_y):
-            for j in range(num_patches_x):
-                # Extract the patch from the image and mask
-                start_y = i * self.patch_size
-                end_y = start_y + self.patch_size
-                start_x = j * self.patch_size
-                end_x = start_x + self.patch_size
-                image_patch = image[start_y:end_y, start_x:end_x]
-                mask_patch = mask[start_y:end_y, start_x:end_x]
+    #     # Iterate over each patch
+    #     for i in range(num_patches_y):
+    #         for j in range(num_patches_x):
+    #             # Extract the patch from the image and mask
+    #             start_y = i * self.patch_size
+    #             end_y = start_y + self.patch_size
+    #             start_x = j * self.patch_size
+    #             end_x = start_x + self.patch_size
+    #             image_patch = image[start_y:end_y, start_x:end_x]
+    #             mask_patch = mask[start_y:end_y, start_x:end_x]
 
-                # Save the patched image
-                patched_rgb_name =f"{os.path.splitext(rgb_name)[0]}patch{idx}{i}{j}.png"
-                patched_rgb_path = os.path.join(patched_rgb_dir, patched_rgb_name)
-                cv2.imwrite(patched_rgb_path, cv2.cvtColor(image_patch, cv2.COLOR_RGB2BGR))
-                            # Save the patched mask
-                patched_mask_name = f"{os.path.splitext(rgb_name)[0]}_patch_mask_{idx}_{i}_{j}.png"
-                patched_mask_path = os.path.join(patched_mask_dir, patched_mask_name)
-                cv2.imwrite(patched_mask_path, mask_patch)
+    #             # Save the patched image
+    #             patched_rgb_name =f"{os.path.splitext(rgb_name)[0]}patch{idx}{i}{j}.png"
+    #             patched_rgb_path = os.path.join(patched_rgb_dir, patched_rgb_name)
+    #             cv2.imwrite(patched_rgb_path, cv2.cvtColor(image_patch, cv2.COLOR_RGB2BGR))
+    #                         # Save the patched mask
+    #             patched_mask_name = f"{os.path.splitext(rgb_name)[0]}_patch_mask_{idx}_{i}_{j}.png"
+    #             patched_mask_path = os.path.join(patched_mask_dir, patched_mask_name)
+    #             cv2.imwrite(patched_mask_path, mask_patch)
   
 
 if __name__=='__main__': 
@@ -182,21 +165,20 @@ if __name__=='__main__':
     parser.add_argument("--masks", type=str, help="Path of the masks file or directory")
     parser.add_argument("--save", type=str, default="./scribbled", help="Path for saving scribbles")
     parser.add_argument("--patch", type=str, default="./patched", help="Path for saving patched images")
-    #parser.add_argument("--config", type=str, default="config.yaml", help="Path of the configuration file")
+    parser.add_argument("--config", type=str, default="config.yaml", help="Path of the configuration file")
     parser.add_argument("--patch-size", type=int, default=512, help="Size in pixels for the square patches")
 
     PARAMS = parser.parse_args()    
         
-    # Usage
-    # '/home/spoch/Documents/private/termatics/leftImg8bit_trainvaltest/leftImg8bit/train/*/*'
-    # '/home/spoch/Documents/private/termatics/gtFine_trainvaltest/gtFine/train/*/*'
-    image_paths = glob.glob(PARAMS.imgs)
+    with open(PARAMS.config, 'r') as f: 
+        config = yaml.safe_load(f)    
+    
+    image_paths, mask_paths = glob.glob(PARAMS.imgs), glob.glob(PARAMS.masks)
     image_paths.sort()
-    mask_paths = glob.glob(PARAMS.masks)
     mask_paths.sort()   
 
-    generator = CustomScribbleGenerator(image_paths, mask_paths, PARAMS.save, n_binary, n_subclasses,
-                                        border_scribble_params, internal_scribble_params)
+    generator = CustomScribbleGenerator(image_paths, mask_paths, PARAMS.save, config["n_binary"], config["n_subclasses"],
+                                        config["border_scribble_params"], config["internal_scribble_params"])
     generator.generate_and_save()
 
     rgb = glob.glob(PARAMS.save+'/rgb/*')

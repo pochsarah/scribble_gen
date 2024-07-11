@@ -1,0 +1,20 @@
+border_scribble_params: {
+    'border_scribble_max_chunk_length': 200,
+    'border_scribble_min_chunk_length': 10,
+    'border_scribble_border_margin': 5,
+    'border_scribble_epsilon': 2,
+    'border_scribble_thickness': 3,
+    'border_scribble_inclusion_probability': 1,
+    'border_scribble_erode_iterations': 0,
+}
+
+internal_scribble_params: {
+    'intern_scribble_num_scribbles_per_contour': 1,
+    'intern_scribble_max_scribble_length': 30,
+    'intern_scribble_thickness_range': (2, 5),
+    #'intern_scribble_scribble_density': 0.01,
+    'intern_scribble_edge_thickness': 10
+}
+
+n_subclasses: 2  # Number of random subclasses to select
+n_binary: 2
