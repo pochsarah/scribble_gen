@@ -99,8 +99,6 @@ Dataset related
 # Example usage
 data_dir = "/home/spoch/Documents/private/scribble_gen/patched"
 
-#histoire de chemin d'image quine colle pas. il faut que les it des path soient avant le msk ou scr
-
 # Define transformations
 transform = transforms.Compose([
     transforms.ToTensor(),
@@ -110,9 +108,6 @@ transform = transforms.Compose([
 # Create dataset and dataloader
 dataset = InteractiveSegmentationDataset(data_dir, num_classes, transform=transform)
 train_loader = DataLoader(dataset, batch_size=4, shuffle=True)
-
-
-
 
 total_epoch = math.ceil(para['iterations']/len(train_loader))
 print('Number of training epochs (the last epoch might not complete): ', total_epoch)

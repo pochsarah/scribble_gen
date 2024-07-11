@@ -118,12 +118,12 @@ def pool_pairs(images, size):
 
     GT_name = 'GT'
     for b_idx in range(b):
-        GT_name += ' %s\n' % images['info']['name'][b_idx]
+        GT_name += ' %s\n' % images['info'][b_idx]
 
     for b_idx in range(b):
         req_images['RGB'].append(im_transform(images['rgb'][b_idx], size))
-        req_images['Mask'].append(mask_transform(images['mask'][b_idx], size))
-        req_images['Scribble'].append(scribble_transform(images['seg'][b_idx], images['srb'][b_idx], size))
+        #req_images['Mask'].append(mask_transform(images['mask'][b_idx], size))
+        #req_images['Scribble'].append(scribble_transform(images['seg'][b_idx], images['srb'][b_idx], size))
         req_images[GT_name].append(mask_transform(images['gt'][b_idx], size))
 
     return get_image_array(req_images, size, key_captions)

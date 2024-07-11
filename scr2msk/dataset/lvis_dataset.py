@@ -1,21 +1,8 @@
-from os import path
-
 import torch
 from torch.utils.data.dataset import Dataset
-from torchvision import transforms
-from PIL import Image
-import numpy as np
 import os
 import cv2
-import numpy as np
-from torchvision import transforms
 import glob
-
-
-
-
-
-
 
 class InteractiveSegmentationDataset(Dataset):
     def __init__(self, data_dir, num_classes, transform=None):

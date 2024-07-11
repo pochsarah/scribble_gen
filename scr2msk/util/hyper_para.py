@@ -10,7 +10,7 @@ class HyperParameters():
         parser.add_argument('--lvis_root', help='LVIS data root', default='../lvis')
 
         # Generic learning parameters
-        parser.add_argument('-i', '--iterations', help='Total number of iterations', default=80000, type=int)
+        parser.add_argument('-i', '--iterations', help='Total number of iterations', default=1001, type=int)
         parser.add_argument('--lr', help='Learning rate', default=1e-4, type=float)
         parser.add_argument('--steps', help='Step at which the learning rate decays', nargs="*", default=[], type=int)
 
