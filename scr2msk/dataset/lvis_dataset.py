@@ -23,6 +23,8 @@ class InteractiveSegmentationDataset(Dataset):
             
             for gt_path, srb_path in zip(gt_paths, srb_paths):
                 self.samples.append((image_name, gt_path, srb_path))
+
+        print(f"Number of samples for {self.num_classes} classes : {len(self.samples)}")
         
     def __len__(self):
         return len(self.samples)
