@@ -6,15 +6,15 @@ class HyperParameters():
         parser = ArgumentParser()
 
         # Data parameters
-        parser.add_argument('--static_root', help='Static training data root', default='../static')
-        parser.add_argument('--lvis_root', help='LVIS data root', default='../lvis')
+        parser. add_argument('--source', help="Path of the dataset repository", default="./patched", type=str)
 
         # Generic learning parameters
         parser.add_argument('-i', '--iterations', help='Total number of iterations', default=1001, type=int)
         parser.add_argument('--lr', help='Learning rate', default=1e-4, type=float)
         parser.add_argument('--steps', help='Step at which the learning rate decays', nargs="*", default=[], type=int)
+        parser.add_argument('--classes', help='Number of classes to give to the model', default=3, type=int)
 
-        parser.add_argument('-b', '--batch_size', help='Batch size', default=16, type=int)
+        parser.add_argument('-b', '--batch_size', help='Batch size', default=4, type=int)
         parser.add_argument('--gamma', help='Gamma used in learning rate decay', default=0.1, type=float)
 
         # Loading
