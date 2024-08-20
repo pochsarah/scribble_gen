@@ -1,0 +1,15 @@
+1 class experiment parameters : 
+
+CUDA Device count:  1
+I am rank 0 in the world of 1!
+hyperpara {'source': 'patched/', 'iterations': 8000, 'lr': 0.0001, 'steps': [], 'classes': 3, 'batch_size': 4, 'gamma': 0.1, 'load_network': None, 'load_deeplab': None, 'load_model': None, 'id': '3_classes', 'debug': False, 'local_rank': 0}
+Number of samples for 3 classes : 9480
+Number of training epochs (the last epoch might not complete):  4
+
+3 classes experiment parameters : 
+
+CUDA Device count:  1
+I am rank 0 in the world of 1!
+hyperpara {'source': 'patched/', 'iterations': 8000, 'lr': 0.0001, 'steps': [], 'classes': 1, 'batch_size': 4, 'gamma': 0.1, 'load_network': None, 'load_deeplab': None, 'load_model': None, 'id': '1_classes', 'debug': False, 'local_rank': 0}
+Number of samples for 1 classes : 89250
+Number of training epochs (the last epoch might not complete):  1
